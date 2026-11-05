@@ -20,7 +20,7 @@ export function App() {
         {!opened ? <motion.button className="envelope" onClick={() => setOpened(true)} whileHover={{y:-5,rotate:-1}} whileTap={{scale:.97}} aria-label="Open your invitation">
           <span className="envelope-spark">✦</span><span className="envelope-flap"/><span className="seal">{assets.envelope}</span><span className="envelope-label">for {guestName}</span><span className="open-note">TAP TO OPEN</span>
         </motion.button> : <motion.article className="letter-card" initial={{rotateX:-25,opacity:0,y:22}} animate={{rotateX:0,opacity:1,y:0}} transition={{duration:.65}}>
-          <span className="corner corner-a">❧</span><span className="corner corner-b">❧</span><p className="script">Dear {guestName},</p><h1>You’re invited<br/>to a <em>very merry</em><br/>birthday!</h1><p className="copy">We’re celebrating another trip around the sun<br/>with a little Christmas magic. Come join us!</p><div className="details"><span>DECEMBER 20</span><i>✦</i><span>2—5 PM</span><i>✦</i><span>THE COZY CABIN</span></div><button className="primary" onClick={() => setPage('hub')}>Come on in <ArrowRight size={16}/></button><p className="signoff">With love &amp; tinsel, <b>your party host</b></p>
+          <span className="corner corner-a">❧</span><span className="corner corner-b">❧</span><p className="script">Dear {guestName},</p><h1>You’re invited<br/>to a <em>very merry</em><br/>birthday!</h1><p className="copy">We’re celebrating another trip around the sun<br/>with a little Christmas magic. Come join us!</p><div className="details"><span>DECEMBER 13 · SUNDAY</span><i>✦</i><span>3—6 PM</span><i>✦</i><span>LOCATION TBD</span></div><button className="primary" onClick={() => setPage('hub')}>Come on in <ArrowRight size={16}/></button><p className="signoff">With love &amp; tinsel, <b>Allie</b></p>
         </motion.article>}
         {!opened && <p className="tap-hint">A little something has your name on it</p>}
       </motion.section> : <motion.section key="hub" className="hub-page" initial={{opacity:0,y:18}} animate={{opacity:1,y:0}} exit={{opacity:0,y:-12}} transition={{duration:.45}}>
@@ -33,7 +33,7 @@ export function App() {
         <button className="back-link" onClick={() => {setPage('letter');setOpened(true)}}><ArrowLeft size={15}/> Back to your invitation</button>
       </motion.section>}
     </AnimatePresence>
-    <footer><span>MADE WITH A LITTLE CHRISTMAS MAGIC</span><span>❄</span><span>DECEMBER · 2025</span></footer>
+    <footer><span>MADE WITH A LITTLE CHRISTMAS MAGIC</span><span>❄</span><span>DECEMBER · 2026</span></footer>
     <div className="side-stamp"><Gift size={14}/> YOU’RE INVITED</div>
   </main>;
 }
