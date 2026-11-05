@@ -11,7 +11,19 @@ export type GuestState = z.infer<typeof guestSchema>;
 export async function guestRequest<T>(action: string, payload: Record<string, unknown> = {}): Promise<T> {
   if (!supabase || !invitationToken) throw new Error('Personal invitation link is required.');
   const { data, error } = await supabase.functions.invoke('guest-api', { body: { action, token: invitationToken, ...payload } });
-  if (error) throw new Error(error.message);
+  if (error) {
+    const context = 'context' in error ? error.context : undefined;
+    if (context instanceof Response) {
+      try {
+        const body = await context.clone().json();
+        if (typeof body?.error === 'string') throw new Error(body.error);
+      } catch (detail) {
+        if (detail instanceof Error && detail.message !== 'Unexpected end of JSON input') throw detail;
+      }
+      throw new Error(`Guest API returned HTTP ${context.status}.`);
+    }
+    throw new Error(error.message);
+  }
   if (data?.error) throw new Error(String(data.error));
   return data as T;
 }
