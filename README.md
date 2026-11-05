@@ -25,12 +25,12 @@ Install the Supabase CLI, authenticate it, and link this folder to project `znby
 npx supabase login
 npx supabase link --project-ref znbyiipxxtrgmmahmhpr
 npx supabase db push
-npx supabase secrets set SUPABASE_SECRET_KEY='sb_secret_...' INVITE_ADMIN_SECRET='a-long-random-admin-secret' APP_ORIGIN='https://your-deployed-site.example'
+npx supabase secrets set INVITE_ADMIN_SECRET='a-long-random-admin-secret' APP_ORIGIN='https://your-deployed-site.example'
 npx supabase functions deploy guest-api --no-verify-jwt
 npx supabase functions deploy admin-invite --no-verify-jwt
 ```
 
-Use the project's **secret** API key for `SUPABASE_SECRET_KEY`. Keep it in Supabase Function secrets, never in this repository or browser. `APP_ORIGIN` should be the final app origin; set `http://localhost:5173` for local development if needed. The publishable key is safe for browser use and belongs in `.env.local` only for local convenience.
+Supabase automatically provides the default secret key through `SUPABASE_SECRET_KEYS`; the functions read its `default` entry. Do not try to add a custom `SUPABASE_*` secret. Only `INVITE_ADMIN_SECRET` and `APP_ORIGIN` are custom secrets. `APP_ORIGIN` should be the final app origin; set `http://localhost:5173` for local development if needed. The publishable key is safe for browser use and belongs in `.env.local` only for local convenience.
 
 ### Create individual invitation links
 

@@ -9,7 +9,9 @@ Deno.serve(async (req) => {
     const { name } = await req.json();
     if (typeof name !== 'string' || name.trim().length < 1 || name.trim().length > 100) return json({ error: 'Valid guest name required.' }, 400);
     const token = [...crypto.getRandomValues(new Uint8Array(32))].map(b => b.toString(16).padStart(2, '0')).join('');
-    const db = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SECRET_KEY')!);
+    const secretKey = (JSON.parse(Deno.env.get('SUPABASE_SECRET_KEYS') ?? '{}') as Record<string, string>).default;
+    if (!secretKey) throw new Error('Supabase default secret API key is unavailable.');
+    const db = createClient(Deno.env.get('SUPABASE_URL')!, secretKey);
     const { error } = await db.from('guests').insert({ name: name.trim(), invitation_token_hash: await digest(token) });
     if (error) throw error;
     const origin = (Deno.env.get('APP_ORIGIN') ?? '').replace(/\/$/, '');
