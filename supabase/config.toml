@@ -1,0 +1,5 @@
+[functions.guest-api]
+verify_jwt = false
+
+[functions.admin-invite]
+verify_jwt = false
