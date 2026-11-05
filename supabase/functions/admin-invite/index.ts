@@ -12,6 +12,7 @@ Deno.serve(async (req) => {
     const db = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SECRET_KEY')!);
     const { error } = await db.from('guests').insert({ name: name.trim(), invitation_token_hash: await digest(token) });
     if (error) throw error;
-    return json({ name: name.trim(), token, path: `/?token=${token}`, warning: 'Store this link securely; the raw token cannot be retrieved later.' }, 201);
+    const origin = (Deno.env.get('APP_ORIGIN') ?? '').replace(/\/$/, '');
+    return json({ name: name.trim(), token, path: `/?token=${token}`, url: origin ? `${origin}/?token=${token}` : null, warning: 'Store this link securely; the raw token cannot be retrieved later.' }, 201);
   } catch (e) { console.error(e); return json({ error: 'Invitation could not be created.' }, 500); }
 });
