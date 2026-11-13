@@ -44,3 +44,23 @@
 .scene-hub .hub-page{background:none}
 .letter-actions .rsvp-letter:disabled{opacity:.62;cursor:wait}
 @media(max-width:680px){.scene-hub{background-image:var(--hub-bg-phone);background-size:cover;background-position:center;background-repeat:no-repeat}.scene-hub .hub-page{background:none}}
+
+/* The hub artwork and activity targets share the full viewport coordinate space. */
+.scene-hub .hub-page{position:absolute;inset:0;z-index:1;display:block;min-height:100svh;padding:0;background:none}
+.scene-hub .activity-world{position:absolute;inset:0;width:100%;height:100%;min-height:0;pointer-events:none}
+.scene-hub .world-activity{pointer-events:auto}
+.scene-hub .world-dress{left:5%;bottom:9vh;width:clamp(230px,27vw,370px)}
+.scene-hub .world-draw{left:38%;bottom:14vh;width:clamp(220px,24vw,330px)}
+.scene-hub .world-letters{right:5%;bottom:18vh;width:clamp(185px,21vw,280px)}
+.scene-hub .topbar{z-index:4;background:transparent}
+.scene-hub footer{z-index:4;pointer-events:none}
+.hub-snow{position:fixed;inset:0;z-index:3;overflow:hidden;pointer-events:none}
+.hub-snow span{position:absolute;left:var(--flake-x);top:-12px;width:var(--flake-size);height:var(--flake-size);border-radius:50%;background:#fffef7;opacity:.78;box-shadow:0 0 5px #fff9;animation:hub-snowfall var(--flake-duration) linear var(--flake-delay) infinite}
+@keyframes hub-snowfall{0%{transform:translate3d(0,-2vh,0);opacity:0}10%{opacity:.8}90%{opacity:.72}100%{transform:translate3d(28px,108vh,0);opacity:0}}
+.letter-actions .rsvp-letter:disabled{opacity:.75;cursor:default}
+@media(max-width:680px){
+ .scene-hub .world-dress{left:3%;top:43%;bottom:auto;width:54vw}
+ .scene-hub .world-draw{right:5%;left:auto;top:65%;bottom:auto;width:41vw}
+ .scene-hub .world-letters{right:4%;top:27%;bottom:auto;width:37vw}
+}
+@media(prefers-reduced-motion:reduce){.hub-snow{display:none}}

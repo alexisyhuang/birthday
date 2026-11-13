@@ -12,6 +12,7 @@ const characters = ['cat','dog','olaf','bear'] as const;
 const accessoryIds = ['gingerbread','bow','santa_hat','scarf'] as const;
 const colors = ['#314d3b','#b75349','#e2a646','#5476a0','#292929'];
 const prompts = ['A little Christmas tree','A jolly snowman','A cozy mug of cocoa'];
+const snowflakes = Array.from({length:28},(_,i)=>i);
 const read = <T,>(key:string,fallback:T):T => { try { return JSON.parse(localStorage.getItem(key) || 'null') ?? fallback; } catch { return fallback; } };
 function normalizeOutfit(value:Outfit):Outfit {
   const characters:Record<string,string>={'🐱':'cat','🐶':'dog','🐻':'bear','⛄':'olaf','snowman':'olaf'};
@@ -64,6 +65,7 @@ export function App() {
     <div className="grain" aria-hidden="true"/>
     {page!=='welcome'&&<header className="topbar"><button className="brand" onClick={()=>{setPage('welcome');setOpened(false);setIntroStarted(false);setTypedCount(0)}}><span className="brand-mark">✿</span> A LITTLE HOLIDAY THING</button><button className="sound" onClick={()=>setSound(!sound)} aria-label={sound?'Turn sound off':'Turn sound on'}>{sound?<Music2 size={16}/>:<VolumeX size={16}/>}<span>{sound?'Sound on':'Sound off'}</span></button></header>}
     {backendError&&page!=='welcome'&&<div className="backend-notice" role="status">{backendError}</div>}
+    {page==='hub'&&<div className="hub-snow" aria-hidden="true">{snowflakes.map(i=><span key={i} style={{'--flake-x':`${(i*37)%100}%`,'--flake-delay':`${-(i*1.31)%15}s`,'--flake-duration':`${11+(i*7)%11}s`,'--flake-size':`${2+(i%3)}px`} as CSSProperties}/>)}</div>}
     <AnimatePresence mode="wait">
       {page==='welcome' ? <motion.section key="welcome" className="welcome-page" {...transition}>
         <div className="welcome-stage"><motion.button className="welcome-cat" aria-label={introStarted?'Welcome cat':'Talk to the welcome cat'} onClick={()=>setIntroStarted(true)} whileHover={{scale:1.025}} whileTap={{scale:.98}}>
@@ -78,13 +80,11 @@ export function App() {
         </motion.article>}
       </motion.section>
       : page==='hub' ? <motion.section key="hub" className="hub-page" {...transition}>
-        <div className="hub-heading"><p className="eyebrow"><span/> YOUR LITTLE HOLIDAY WORLD <span/></p><h1>Welcome, <em>{guestName}!</em></h1><p>Choose a little adventure.</p></div>
         <div className="activity-world">
           <HubActivity className="world-dress" label="Dress up" image={assets.activities.dressUp} onClick={()=>setPage('dress')}/>
           <HubActivity className="world-draw" label="Draw and play" image={assets.activities.drawing} onClick={()=>setPage('draw')}/>
           <HubActivity className="world-letters" label="Letters to Santa" image={assets.activities.letters} onClick={()=>setPage('santa')}/>
         </div>
-        <button className="back-link" onClick={()=>{setPage('letter');setOpened(true)}}><ArrowLeft size={15}/> Back to your invitation</button>
       </motion.section>
       : <motion.section key={page} className="activity-page" {...transition}>
         <button className="activity-back" onClick={goHub}><ArrowLeft size={15}/> Back to the little world</button>
