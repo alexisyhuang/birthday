@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import type { CSSProperties, PointerEvent } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
-import { ArrowLeft, ArrowRight, Music2, VolumeX, Gift, RotateCcw, Eraser, Send, Check, Clock3 } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Music2, VolumeX, RotateCcw, Eraser, Send, Check, Clock3 } from 'lucide-react';
 import { assets } from './data/assets';
 import { cloudEnabled, guestRequest, verifyInvitation } from './lib/backend';
 
@@ -65,7 +65,7 @@ export function App() {
         {introStarted&&introReady&&<div className="game-dialogue" aria-live="polite"><p>{introLine.slice(0,typedCount)}{typedCount<introLine.length&&<span className="type-caret"/>}</p>{typedCount>=introLine.length&&<button onClick={()=>{setOpened(false);setPage('letter')}}>Continue <ArrowRight size={15}/></button>}</div>}
       </motion.section>
       : page==='letter' ? <motion.section key="letter" className="letter-page" {...transition}>
-        {!opened ? <div className="envelope-stage"><p className="eyebrow"><span/> A NOTE FOR YOU <span/></p><motion.button className="envelope-art" onClick={()=>setOpened(true)} whileHover={{y:-5,rotate:-1}} whileTap={{scale:.98}} aria-label="Open your invitation"><img src={assets.envelope} alt="A festive envelope addressed from Allie"/><span className="recipient-name">For {guestName}</span><span className="envelope-prompt">Open your invitation <ArrowRight size={15}/></span></motion.button><p className="tap-hint">A little something has your name on it</p></div>
+        {!opened ? <div className="envelope-stage"><p className="eyebrow"><span/> A NOTE FOR YOU <span/></p><motion.button className="envelope-art" onClick={()=>setOpened(true)} whileHover={{y:-5,rotate:-1}} whileTap={{scale:.98}} aria-label="Open your invitation"><img src={assets.envelope} alt="A festive envelope addressed from Allie"/><span className="recipient-name">For {guestName}</span></motion.button></div>
         : <motion.article className="letter-card" initial={{rotateX:-20,opacity:0,y:22}} animate={{rotateX:0,opacity:1,y:0}} transition={{duration:.65}} style={{backgroundImage:`url("${assets.letterBackground}")`}}>
           <div className="letter-content"><p className="script">Dear {guestName},</p><h1>You’re invited<br/>to a <em>very merry</em><br/>birthday!</h1><p className="copy">We’re celebrating another trip around the sun with a little Christmas magic. Come join us!</p><div className="details"><span>DECEMBER 13 · SUNDAY</span><i>✦</i><span>3—6 PM</span><i>✦</i><span>20 WEST STREET, NYC</span></div><button className="primary" onClick={goHub}>Come on in <ArrowRight size={16}/></button><p className="signoff">With love &amp; tinsel, <b>Allie</b></p></div>
         </motion.article>}
@@ -84,7 +84,7 @@ export function App() {
         {page==='dress'?<DressUp name={guestName} outfit={outfit} onSave={saveOutfit}/>:page==='draw'?<Drawing name={guestName}/>:<Santa name={guestName} rsvp={rsvp} confirmed={confirmed} onSave={saveRsvp}/>}
       </motion.section>}
     </AnimatePresence>
-    {page!=='welcome'&&<><footer><span>MADE WITH A LITTLE CHRISTMAS MAGIC</span><span>❄</span><span>DECEMBER · 2026</span></footer><div className="side-stamp"><Gift size={14}/> YOU’RE INVITED</div></>}
+    {page!=='welcome'&&<footer><span>ALLIE’S 25TH BIRTHDAY</span><span>❄</span><span>DECEMBER 12, 2026</span></footer>}
   </main>;
 }
 const transition={initial:{opacity:0,y:14},animate:{opacity:1,y:0},exit:{opacity:0,y:-12},transition:{duration:.35}};

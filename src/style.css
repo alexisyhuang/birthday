@@ -12,3 +12,6 @@
 /* Keep the speech bubble at character scale; it is also an img inside the cat button. */
 .welcome-cat .exclamation-bubble{width:clamp(66px,17vw,96px);height:auto;right:12%;top:3%;transform:none;object-fit:contain}
 @media(max-width:600px){.welcome-cat .exclamation-bubble{width:76px;right:9%;top:3%}}
+
+/* A single soft dreamy wash carries from the welcome screen through the letter. */
+.scene-welcome,.scene-letter{background:radial-gradient(ellipse at 50% 42%,#faf5fd 0%,#f1eaf7 72%,#e9e0f2 100%)}
