@@ -145,3 +145,14 @@
 .character-stage .save-glimmer{position:absolute;z-index:4;top:12%;left:50%;transform:translateX(-50%);white-space:nowrap;padding:8px 12px;border:1px solid #e2c7a5;border-radius:22px;background:#fff9eef0;color:#a15e52;box-shadow:0 4px 14px #55452b22;font:10px 'DM Mono',monospace;letter-spacing:.04em}
 .save-button{min-width:150px;justify-content:center}
 @media(max-width:680px){.character-art{height:86%;max-width:88%}}
+/* Final lower placement: let the activity art sit in the foreground snow. */
+@media(min-width:681px){
+ .scene-hub .world-dress{bottom:1vh}
+ .scene-hub .world-draw{bottom:4vh}
+ .scene-hub .world-letters{bottom:6vh}
+}
+@media(max-width:680px){
+ .scene-hub .world-dress{top:56%}
+ .scene-hub .world-draw{top:78%}
+ .scene-hub .world-letters{top:40%}
+}
