@@ -31,7 +31,7 @@ Deno.serve(async (req) => {
     }
     if (action === 'outfit') {
       const ids = ['bear', 'cat', 'dog', 'snowman'];
-      const accessories = ['bow', 'hat', 'scarf', 'sparkle'];
+      const accessories = ['gingerbread', 'bow', 'santa_hat', 'scarf'];
       if (!ids.includes(body.character_id) || (body.accessory !== null && !accessories.includes(body.accessory))) return json({ error: 'Invalid outfit selection.' }, 400);
       const { error: saveError } = await db.from('outfits').upsert({ guest_id: guest.id, character_id: body.character_id, accessory: body.accessory }, { onConflict: 'guest_id' });
       if (saveError) throw saveError;
