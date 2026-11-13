@@ -81,3 +81,43 @@
  .scene-hub .world-draw{right:5%;left:auto;top:65%;bottom:auto;width:41vw}
  .scene-hub .world-letters{right:4%;top:27%;bottom:auto;width:37vw}
 }
+
+/* Cropped character frames keep each overlay aligned to that pal's own anatomy. */
+.character-art{width:min(100%,380px);height:auto;max-height:82%;position:relative;aspect-ratio:auto;align-self:center;justify-self:center;display:block;margin:auto;animation:bob 3s ease-in-out infinite}
+.character-art.character-cat{aspect-ratio:379/464}
+.character-art.character-dog{aspect-ratio:373/479}
+.character-art.character-olaf{width:min(100%,460px);aspect-ratio:566/474}
+.character-art.character-bear{width:min(100%,340px);aspect-ratio:318/455}
+.character-art .character-base{position:absolute;inset:0;width:100%;height:100%;object-fit:fill}
+.character-art .character-accessory{position:absolute;height:auto;object-fit:contain;filter:drop-shadow(0 2px 2px #49382c36)}
+/* Cat anchors */
+.character-cat .accessory-santa_hat{width:32%;left:51%;top:-8%;transform:rotate(12deg)}
+.character-cat .accessory-bow{width:23%;left:38%;top:2%}
+.character-cat .accessory-scarf{width:50%;left:25%;top:47%}
+.character-cat .accessory-gingerbread{width:20%;left:57%;top:51%;transform:rotate(7deg)}
+/* Dog anchors */
+.character-dog .accessory-santa_hat{width:32%;left:49%;top:-8%;transform:rotate(12deg)}
+.character-dog .accessory-bow{width:23%;left:49%;top:2%}
+.character-dog .accessory-scarf{width:51%;left:25%;top:46%}
+.character-dog .accessory-gingerbread{width:20%;left:61%;top:50%;transform:rotate(7deg)}
+/* Olaf anchors */
+.character-olaf .accessory-santa_hat{width:30%;left:55%;top:-6%;transform:rotate(13deg)}
+.character-olaf .accessory-bow{width:21%;left:35%;top:8%}
+.character-olaf .accessory-scarf{width:43%;left:29%;top:44%}
+.character-olaf .accessory-gingerbread{width:19%;left:60%;top:50%;transform:rotate(7deg)}
+/* Bear anchors */
+.character-bear .accessory-santa_hat{width:33%;left:48%;top:-7%;transform:rotate(11deg)}
+.character-bear .accessory-bow{width:23%;left:37%;top:1%}
+.character-bear .accessory-scarf{width:53%;left:23%;top:44%}
+.character-bear .accessory-gingerbread{width:19%;left:56%;top:49%;transform:rotate(7deg)}
+/* Lower the clickable scenes onto the snowy ground in both compositions. */
+@media(min-width:681px){
+ .scene-hub .world-dress{bottom:8vh}
+ .scene-hub .world-draw{bottom:13vh}
+ .scene-hub .world-letters{bottom:15vh}
+}
+@media(max-width:680px){
+ .scene-hub .world-dress{top:51%}
+ .scene-hub .world-draw{top:73%}
+ .scene-hub .world-letters{top:35%}
+}

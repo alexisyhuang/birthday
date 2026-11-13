@@ -16,10 +16,10 @@ export const assets = {
     letters: art('../../art/letters.png'),
   },
   characters: {
-    cat: art('../../art/cat.png'),
-    dog: art('../../art/dog.png'),
-    olaf: art('../../art/olaf.png'),
-    bear: art('../../art/bear.png'),
+    cat: art('../../art/character-crops/cat.png'),
+    dog: art('../../art/character-crops/dog.png'),
+    olaf: art('../../art/character-crops/olaf.png'),
+    bear: art('../../art/character-crops/bear.png'),
   },
   accessories: {
     gingerbread: art('../../art/accessory-parts/gingerbread.png'),
