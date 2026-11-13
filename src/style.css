@@ -15,3 +15,25 @@
 
 /* A single soft dreamy wash carries from the welcome screen through the letter. */
 .scene-welcome,.scene-letter{background:radial-gradient(ellipse at 50% 42%,#faf5fd 0%,#f1eaf7 72%,#e9e0f2 100%)}
+
+/* Softer game dialogue and clearer invitation stationery layout. */
+.scene-welcome .grain,.scene-letter .grain{display:none}
+.game-dialogue{background:#fffaf4ed;border:1px solid #d8cae5;box-shadow:0 4px 14px #51486717;color:#594d67;padding:15px 20px;min-height:76px}
+.game-dialogue button{color:#a2635b}
+.envelope-art{filter:none;box-shadow:0 12px 28px #59466815;will-change:transform}
+.letter-card{min-height:600px;padding:78px 78px 68px}
+.letter-content{width:100%;max-width:340px}
+.letter-content .script{font-size:17px;margin-bottom:6px}
+.letter-content h1{font-size:clamp(27px,4vw,35px);line-height:1.02;letter-spacing:-.045em}
+.party-details{display:grid;grid-template-columns:.85fr .7fr 1.5fr;align-items:center;gap:5px;margin:15px auto 13px;padding:8px 6px;background:#fff9efb8;border-radius:15px;color:#66745f}
+.party-details>div{min-width:0;display:flex;align-items:center;justify-content:center;gap:4px;font:8px 'DM Mono',monospace;white-space:nowrap}
+.party-details svg{flex:0 0 auto;color:#bd806a}
+.letter-actions{display:grid;grid-template-columns:1fr 1fr;gap:6px;max-width:300px;margin:0 auto}
+.rsvp-letter{min-height:36px;display:flex;justify-content:center;align-items:center;gap:5px;padding:6px 5px;border:1px solid #ded2df;border-radius:14px;background:#fffaf4;color:#596a57;font:8px 'DM Mono',monospace;cursor:pointer;transition:background .18s,border-color .18s}
+.rsvp-letter:hover,.rsvp-letter:focus-visible{background:#f1f2e9;border-color:#aab79d}
+.rsvp-letter.no{color:#986a68}.rsvp-letter span{font-size:12px}
+.games-link{grid-column:1/-1;justify-self:center;display:flex;align-items:center;gap:7px;padding:7px 8px;border:0;background:transparent;color:#a56358;font:9px 'DM Mono',monospace;cursor:pointer}
+.games-link:hover{text-decoration:underline}
+.letter-rsvp-status{margin:3px auto 0;color:#64785e;font:8px 'DM Mono',monospace;text-align:center}
+.letter-content .signoff{font-size:11px;margin-top:7px}
+@media(max-width:600px){.letter-card{min-height:540px;padding:72px 52px 60px}.letter-content{max-width:310px}.letter-content h1{font-size:30px}.party-details{grid-template-columns:1fr;gap:6px;padding:9px}.party-details>div{font-size:9px}.letter-actions{max-width:280px}.rsvp-letter{font-size:8px}}
