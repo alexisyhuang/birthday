@@ -121,3 +121,27 @@
  .scene-hub .world-draw{top:73%}
  .scene-hub .world-letters{top:35%}
 }
+
+/* Preserve the cropped art's aspect ratio for every character. */
+.character-art{width:auto;height:78%;max-width:90%;max-height:none;aspect-ratio:auto;margin:auto;position:relative}
+.character-art.character-cat{aspect-ratio:379/464}
+.character-art.character-dog{aspect-ratio:373/479}
+.character-art.character-olaf{aspect-ratio:566/474}
+.character-art.character-bear{aspect-ratio:318/455}
+.character-art .character-base{object-fit:contain}
+/* Accessory adjustments: hats sit on the left, scarves span the neck, cookie stays near the muzzle. */
+.character-cat .accessory-santa_hat{width:34%;left:10%;top:-5%;transform:rotate(-18deg)}
+.character-dog .accessory-santa_hat{width:34%;left:8%;top:-5%;transform:rotate(-18deg)}
+.character-olaf .accessory-santa_hat{width:32%;left:12%;top:-4%;transform:rotate(-16deg)}
+.character-bear .accessory-santa_hat{width:36%;left:7%;top:-5%;transform:rotate(-18deg)}
+.character-cat .accessory-scarf{width:66%;left:17%;top:47%}
+.character-dog .accessory-scarf{width:68%;left:16%;top:46%}
+.character-olaf .accessory-scarf{width:61%;left:19%;top:44%}
+.character-bear .accessory-scarf{width:69%;left:15%;top:44%}
+.character-cat .accessory-gingerbread{width:25%;left:55%;top:35%;transform:rotate(7deg)}
+.character-dog .accessory-gingerbread{width:25%;left:59%;top:34%;transform:rotate(7deg)}
+.character-olaf .accessory-gingerbread{width:24%;left:58%;top:34%;transform:rotate(7deg)}
+.character-bear .accessory-gingerbread{width:24%;left:54%;top:35%;transform:rotate(7deg)}
+.character-stage .save-glimmer{position:absolute;z-index:4;top:12%;left:50%;transform:translateX(-50%);white-space:nowrap;padding:8px 12px;border:1px solid #e2c7a5;border-radius:22px;background:#fff9eef0;color:#a15e52;box-shadow:0 4px 14px #55452b22;font:10px 'DM Mono',monospace;letter-spacing:.04em}
+.save-button{min-width:150px;justify-content:center}
+@media(max-width:680px){.character-art{height:86%;max-width:88%}}
