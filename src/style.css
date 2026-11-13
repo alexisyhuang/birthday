@@ -156,3 +156,31 @@
  .scene-hub .world-draw{top:78%}
  .scene-hub .world-letters{top:40%}
 }
+
+/* User-provided accessory pose references. */
+.character-cat .accessory-gingerbread{width:27%;left:36%;top:37%;transform:rotate(5deg)}
+.character-bear .accessory-gingerbread{width:27%;left:38%;top:37%;transform:rotate(5deg)}
+.character-olaf .accessory-gingerbread{width:24%;left:23%;top:61%;transform:rotate(-5deg)}
+.character-dog .accessory-gingerbread{width:25%;left:58%;top:34%;transform:rotate(5deg)}
+.character-bear .accessory-scarf{width:81%;left:9%;top:46%}
+.character-dog .accessory-scarf{width:68%;left:30%;top:39%}
+.character-olaf .accessory-scarf{width:55%;left:7%;top:71%}
+.character-cat .accessory-scarf{width:66%;left:17%;top:47%}
+.scene-hub .world-letters{bottom:2vh}
+/* Softer dress-up room styling; artwork keeps its own proportions. */
+.character-stage{min-height:390px;border:1px solid #e6d8d4;border-radius:18px;background:radial-gradient(ellipse at 50% 42%,#fff9f1 0%,#f4e9ed 72%,#ece4f1 100%);box-shadow:inset 0 0 0 7px #fff9f077}
+.character-stage:after{display:none}
+.stage-star{color:#c99579;font-size:20px}
+.star-one{top:35px;left:38px}.star-two{top:72px;right:38px}
+.choice-panel{border:1px solid #e6d8d4;border-radius:18px;background:linear-gradient(145deg,#fffaf2,#f8eff1);padding:28px}
+.choice-panel label{letter-spacing:.15em;color:#94796d}
+.choice{border-radius:13px;background:#fffaf2;border-color:#e8d9d3;transition:transform .16s,background .16s,outline-color .16s}
+.choice:hover{transform:translateY(-2px)}
+.choice.selected{outline:2px solid #be8174;background:#fff1e8}
+.character-choice{width:58px;height:58px}
+.accessory-choice{width:58px;height:58px}
+.save-button{border-radius:22px;background:#a96459;box-shadow:0 3px 0 #834c48}
+.save-button:hover{background:#97584f}
+.character-stage .save-glimmer{top:8%;border-color:#edd0a9;background:#fffaf2;color:#a55f55;box-shadow:0 4px 15px #76555e20}
+@media(min-width:681px){.dress-layout{grid-template-columns:minmax(300px,1.1fr) minmax(300px,.9fr);gap:22px}.character-stage{min-height:430px}}
+@media(max-width:680px){.character-stage{min-height:260px;border-radius:16px}.choice-panel{border-radius:16px;padding:19px}.character-choice,.accessory-choice{width:50px;height:50px}.scene-hub .world-letters{top:40%;bottom:auto}}
