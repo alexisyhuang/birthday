@@ -24,6 +24,9 @@ export function App() {
   const [guestName,setGuestName]=useState(initialGuestName);
   const [backendError,setBackendError]=useState('');
   const [opened,setOpened]=useState(false);
+  const [introStarted,setIntroStarted]=useState(false);
+  const [introReady,setIntroReady]=useState(!cloudEnabled);
+  const [typedCount,setTypedCount]=useState(0);
   const [sound,setSound]=useState(false);
   const [outfit,setOutfit]=useState<Outfit>(()=>normalizeOutfit(read(`outfit-${initialGuestName}`,{character:'cat',accessory:'scarf'})));
   const [rsvp,setRsvp]=useState<'yes'|'no'|null>(()=>read(`rsvp-${initialGuestName}`,null));
@@ -32,11 +35,13 @@ export function App() {
   useEffect(()=>{
     if(!cloudEnabled)return;
     verifyInvitation().then(data=>{
-      setGuestName(data.guest.name);setRsvp(data.rsvp);
+      setGuestName(data.guest.name);setRsvp(data.rsvp);setIntroReady(true);
       if(data.outfit)setOutfit({character:data.outfit.character_id==='snowman'?'olaf':data.outfit.character_id,accessory:data.outfit.accessory??''});
-    }).catch(e=>setBackendError(e instanceof Error?e.message:'Could not verify invitation.'));
+    }).catch(e=>{setBackendError(e instanceof Error?e.message:'Could not verify invitation.');setIntroReady(true);});
   },[]);
   const goHub=()=>setPage('hub');
+  const introLine=`Oh hi, ${guestName}! I have a special delivery for you...`;
+  useEffect(()=>{if(!introStarted||!introReady||typedCount>=introLine.length)return;const timer=window.setTimeout(()=>setTypedCount(count=>count+1),42);return()=>window.clearTimeout(timer);},[introStarted,introReady,typedCount,introLine.length]);
   async function saveOutfit(next:Outfit){
     setOutfit(next);localStorage.setItem(`outfit-${guestName}`,JSON.stringify(next));
     if(cloudEnabled)try{await guestRequest('outfit',{character_id:next.character==='olaf'?'snowman':next.character,accessory:next.accessory||null});setBackendError('');}
@@ -50,18 +55,17 @@ export function App() {
   const artStyle={'--hub-bg-desktop':`url(\"${assets.hubBackground.desktop}\")`,'--hub-bg-phone':`url(\"${assets.hubBackground.phone}\")`} as CSSProperties;
   return <main className={`scene scene-${page}`} style={artStyle}>
     <div className="grain" aria-hidden="true"/>
-    <header className="topbar"><button className="brand" onClick={()=>{setPage('welcome');setOpened(false)}}><span className="brand-mark">✿</span> A LITTLE HOLIDAY THING</button><button className="sound" onClick={()=>setSound(!sound)} aria-label={sound?'Turn sound off':'Turn sound on'}>{sound?<Music2 size={16}/>:<VolumeX size={16}/>}<span>{sound?'Sound on':'Sound off'}</span></button></header>
-    {backendError&&<div className="backend-notice" role="status">{backendError}</div>}
+    {page!=='welcome'&&<header className="topbar"><button className="brand" onClick={()=>{setPage('welcome');setOpened(false);setIntroStarted(false);setTypedCount(0)}}><span className="brand-mark">✿</span> A LITTLE HOLIDAY THING</button><button className="sound" onClick={()=>setSound(!sound)} aria-label={sound?'Turn sound off':'Turn sound on'}>{sound?<Music2 size={16}/>:<VolumeX size={16}/>}<span>{sound?'Sound on':'Sound off'}</span></button></header>}
+    {backendError&&page!=='welcome'&&<div className="backend-notice" role="status">{backendError}</div>}
     <AnimatePresence mode="wait">
       {page==='welcome' ? <motion.section key="welcome" className="welcome-page" {...transition}>
-        <p className="eyebrow"><span/> A LITTLE NOTE FOR YOU <span/></p>
-        <motion.button className="welcome-cat" aria-label="Continue to your invitation" onClick={()=>{setOpened(false);setPage('letter')}} whileHover={{scale:1.045,y:-4}} whileTap={{scale:.97}}>
-          <img src={assets.welcomeCat} alt="A festive cat with a present"/><span>Tap me!</span>
-        </motion.button>
-        <p className="welcome-copy">Psst… {guestName}, you’ve got mail!</p>
+        <div className="welcome-stage"><motion.button className="welcome-cat" aria-label={introStarted?'Welcome cat':'Talk to the welcome cat'} onClick={()=>setIntroStarted(true)} whileHover={{scale:1.025}} whileTap={{scale:.98}}>
+          <img className="welcome-cat-art" src={assets.welcomeCat} alt="A festive cat holding a present"/><motion.img className="exclamation-bubble" src={assets.exclamationBubble} alt="" aria-hidden="true" animate={{y:[0,-11,0],rotate:[0,3,0]}} transition={{duration:1.15,repeat:Infinity,ease:'easeInOut'}}/>
+        </motion.button></div>
+        {introStarted&&introReady&&<div className="game-dialogue" aria-live="polite"><p>{introLine.slice(0,typedCount)}{typedCount<introLine.length&&<span className="type-caret"/>}</p>{typedCount>=introLine.length&&<button onClick={()=>{setOpened(false);setPage('letter')}}>Continue <ArrowRight size={15}/></button>}</div>}
       </motion.section>
       : page==='letter' ? <motion.section key="letter" className="letter-page" {...transition}>
-        {!opened ? <div className="envelope-stage"><p className="eyebrow"><span/> A NOTE FOR YOU <span/></p><motion.button className="envelope-art" onClick={()=>setOpened(true)} whileHover={{y:-5,rotate:-1}} whileTap={{scale:.98}} aria-label="Open your invitation"><img src={assets.envelope} alt="A festive envelope addressed from Allie"/><span className="envelope-prompt">Open your invitation <ArrowRight size={15}/></span></motion.button><p className="tap-hint">A little something has your name on it</p></div>
+        {!opened ? <div className="envelope-stage"><p className="eyebrow"><span/> A NOTE FOR YOU <span/></p><motion.button className="envelope-art" onClick={()=>setOpened(true)} whileHover={{y:-5,rotate:-1}} whileTap={{scale:.98}} aria-label="Open your invitation"><img src={assets.envelope} alt="A festive envelope addressed from Allie"/><span className="recipient-name">For {guestName}</span><span className="envelope-prompt">Open your invitation <ArrowRight size={15}/></span></motion.button><p className="tap-hint">A little something has your name on it</p></div>
         : <motion.article className="letter-card" initial={{rotateX:-20,opacity:0,y:22}} animate={{rotateX:0,opacity:1,y:0}} transition={{duration:.65}} style={{backgroundImage:`url("${assets.letterBackground}")`}}>
           <div className="letter-content"><p className="script">Dear {guestName},</p><h1>You’re invited<br/>to a <em>very merry</em><br/>birthday!</h1><p className="copy">We’re celebrating another trip around the sun with a little Christmas magic. Come join us!</p><div className="details"><span>DECEMBER 13 · SUNDAY</span><i>✦</i><span>3—6 PM</span><i>✦</i><span>20 WEST STREET, NYC</span></div><button className="primary" onClick={goHub}>Come on in <ArrowRight size={16}/></button><p className="signoff">With love &amp; tinsel, <b>Allie</b></p></div>
         </motion.article>}
@@ -80,7 +84,7 @@ export function App() {
         {page==='dress'?<DressUp name={guestName} outfit={outfit} onSave={saveOutfit}/>:page==='draw'?<Drawing name={guestName}/>:<Santa name={guestName} rsvp={rsvp} confirmed={confirmed} onSave={saveRsvp}/>}
       </motion.section>}
     </AnimatePresence>
-    <footer><span>MADE WITH A LITTLE CHRISTMAS MAGIC</span><span>❄</span><span>DECEMBER · 2026</span></footer><div className="side-stamp"><Gift size={14}/> YOU’RE INVITED</div>
+    {page!=='welcome'&&<><footer><span>MADE WITH A LITTLE CHRISTMAS MAGIC</span><span>❄</span><span>DECEMBER · 2026</span></footer><div className="side-stamp"><Gift size={14}/> YOU’RE INVITED</div></>}
   </main>;
 }
 const transition={initial:{opacity:0,y:14},animate:{opacity:1,y:0},exit:{opacity:0,y:-12},transition:{duration:.35}};

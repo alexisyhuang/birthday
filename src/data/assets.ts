@@ -3,6 +3,7 @@ const art = (path: string) => new URL(path, import.meta.url).href;
 
 export const assets = {
   welcomeCat: art('../../art/welcome cat.png'),
+  exclamationBubble: art('../../art/exclamation bubble.png'),
   envelope: art('../../art/letter envelope.png'),
   letterBackground: art('../../art/letter bg.png'),
   hubBackground: {
