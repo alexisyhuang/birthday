@@ -31,6 +31,7 @@ export function App() {
   const [outfit,setOutfit]=useState<Outfit>(()=>normalizeOutfit(read(`outfit-${initialGuestName}`,{character:'cat',accessory:'scarf'})));
   const [rsvp,setRsvp]=useState<'yes'|'no'|null>(()=>read(`rsvp-${initialGuestName}`,null));
   const [confirmed,setConfirmed]=useState(false);
+  const [leavingLetter,setLeavingLetter]=useState(false);
 
   useEffect(()=>{
     if(!cloudEnabled)return;
@@ -46,6 +47,12 @@ export function App() {
     setOutfit(next);localStorage.setItem(`outfit-${guestName}`,JSON.stringify(next));
     if(cloudEnabled)try{await guestRequest('outfit',{character_id:next.character==='olaf'?'snowman':next.character,accessory:next.accessory||null});setBackendError('');}
     catch(e){setBackendError(e instanceof Error?e.message:'Could not save outfit.');}
+  }
+  function answerInvitation(answer:'yes'|'no'){
+    if(leavingLetter)return;
+    setLeavingLetter(true);
+    void saveRsvp(answer);
+    window.setTimeout(()=>setPage('hub'),800);
   }
   async function saveRsvp(answer:'yes'|'no'){
     setRsvp(answer);localStorage.setItem(`rsvp-${guestName}`,JSON.stringify(answer));setConfirmed(true);window.setTimeout(()=>setConfirmed(false),2200);
@@ -67,7 +74,7 @@ export function App() {
       : page==='letter' ? <motion.section key="letter" className="letter-page" {...transition}>
         {!opened ? <div className="envelope-stage"><p className="eyebrow"><span/> A NOTE FOR YOU <span/></p><motion.button className="envelope-art" onClick={()=>setOpened(true)} whileHover={{y:-5,rotate:-1}} whileTap={{scale:.98}} aria-label="Open your invitation"><img src={assets.envelope} alt="A festive envelope addressed from Allie"/><span className="recipient-name">For {guestName}</span></motion.button></div>
         : <motion.article className="letter-card" initial={{rotateX:-20,opacity:0,y:22}} animate={{rotateX:0,opacity:1,y:0}} transition={{duration:.65}} style={{backgroundImage:`url("${assets.letterBackground}")`}}>
-          <div className="letter-content"><p className="script">Dear {guestName},</p><h1>You’re invited<br/>to a <em>very merry</em><br/>birthday!</h1><div className="party-details"><div><CalendarDays size={15}/><span>Sat · Dec 12</span></div><div><Clock3 size={15}/><span>3–6 PM</span></div><div><MapPin size={15}/><span>20 West Street, NYC</span></div></div><div className="letter-actions"><button className="rsvp-letter yes" onClick={()=>saveRsvp('yes')}><span>🎄</span> Yes, I can make it!</button><button className="rsvp-letter no" onClick={()=>saveRsvp('no')}><span>💌</span> I won’t be there</button><button className="games-link" onClick={goHub}>Show me the games <ArrowRight size={15}/></button></div>{rsvp&&<motion.p className="letter-rsvp-status" initial={{opacity:0,y:5}} animate={{opacity:1,y:0}}>{confirmed?'Your reply has been saved!':`Your RSVP is saved as “${rsvp==='yes'?'Yes, I can make it':'I won’t be there'}.”`}</motion.p>}<p className="signoff">With love &amp; tinsel, <b>Allie</b></p></div>
+          <div className="letter-content"><p className="script">Dear {guestName},</p><h1>You’re invited<br/>to a <em>very merry</em><br/>birthday!</h1><div className="party-details"><div><CalendarDays size={15}/><span>Sat · Dec 12</span></div><div><Clock3 size={15}/><span>3–6 PM</span></div><div><MapPin size={15}/><span>20 West Street, NYC</span></div></div><div className="letter-actions"><button className="rsvp-letter yes" disabled={leavingLetter} onClick={()=>answerInvitation('yes')}><span>🎄</span> Yes, I can make it!</button><button className="rsvp-letter no" disabled={leavingLetter} onClick={()=>answerInvitation('no')}><span>💌</span> I won’t be there</button></div>{rsvp&&<motion.p className="letter-rsvp-status" initial={{opacity:0,y:5}} animate={{opacity:1,y:0}}>{confirmed?'Your reply has been saved!':`Your RSVP is saved as “${rsvp==='yes'?'Yes, I can make it':'I won’t be there'}.”`}</motion.p>}<p className="signoff">With love &amp; tinsel, <b>Allie</b></p></div>
         </motion.article>}
       </motion.section>
       : page==='hub' ? <motion.section key="hub" className="hub-page" {...transition}>

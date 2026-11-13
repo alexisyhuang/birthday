@@ -37,3 +37,10 @@
 .letter-rsvp-status{margin:3px auto 0;color:#64785e;font:8px 'DM Mono',monospace;text-align:center}
 .letter-content .signoff{font-size:11px;margin-top:7px}
 @media(max-width:600px){.letter-card{min-height:540px;padding:72px 52px 60px}.letter-content{max-width:310px}.letter-content h1{font-size:30px}.party-details{grid-template-columns:1fr;gap:6px;padding:9px}.party-details>div{font-size:9px}.letter-actions{max-width:280px}.rsvp-letter{font-size:8px}}
+
+/* Blush-toned invitation sequence and full-screen hub scenery. */
+.scene-welcome,.scene-letter{background:radial-gradient(ellipse at 50% 42%,#fff7fb 0%,#f8e9f2 72%,#f0dce9 100%)}
+.scene-hub{background-image:var(--hub-bg-desktop);background-size:cover;background-position:center;background-repeat:no-repeat}
+.scene-hub .hub-page{background:none}
+.letter-actions .rsvp-letter:disabled{opacity:.62;cursor:wait}
+@media(max-width:680px){.scene-hub{background-image:var(--hub-bg-phone);background-size:cover;background-position:center;background-repeat:no-repeat}.scene-hub .hub-page{background:none}}
