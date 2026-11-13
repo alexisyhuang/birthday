@@ -63,7 +63,7 @@ export function App() {
   const artStyle={'--hub-bg-desktop':`url(\"${assets.hubBackground.desktop}\")`,'--hub-bg-phone':`url(\"${assets.hubBackground.phone}\")`} as CSSProperties;
   return <main className={`scene scene-${page}`} style={artStyle}>
     <div className="grain" aria-hidden="true"/>
-    {page!=='welcome'&&<header className="topbar"><button className="brand" onClick={()=>{setPage('welcome');setOpened(false);setIntroStarted(false);setTypedCount(0)}}><span className="brand-mark">✿</span> A LITTLE HOLIDAY THING</button><button className="sound" onClick={()=>setSound(!sound)} aria-label={sound?'Turn sound off':'Turn sound on'}>{sound?<Music2 size={16}/>:<VolumeX size={16}/>}<span>{sound?'Sound on':'Sound off'}</span></button></header>}
+    {page!=='welcome'&&<header className="topbar">{page!=='hub'&&<button className="brand" onClick={()=>{setPage('welcome');setOpened(false);setIntroStarted(false);setTypedCount(0)}}><span className="brand-mark">✿</span> A LITTLE HOLIDAY THING</button>}<button className="sound" onClick={()=>setSound(!sound)} aria-label={sound?'Turn sound off':'Turn sound on'}>{sound?<Music2 size={16}/>:<VolumeX size={16}/>}<span>{sound?'Sound on':'Sound off'}</span></button></header>}
     {backendError&&page!=='welcome'&&<div className="backend-notice" role="status">{backendError}</div>}
     {page==='hub'&&<div className="hub-snow" aria-hidden="true">{snowflakes.map(i=><span key={i} style={{'--flake-x':`${(i*37)%100}%`,'--flake-delay':`${-(i*1.31)%15}s`,'--flake-duration':`${11+(i*7)%11}s`,'--flake-size':`${2+(i%3)}px`} as CSSProperties}/>)}</div>}
     <AnimatePresence mode="wait">
@@ -91,7 +91,7 @@ export function App() {
         {page==='dress'?<DressUp name={guestName} outfit={outfit} onSave={saveOutfit}/>:page==='draw'?<Drawing name={guestName}/>:<Santa name={guestName} rsvp={rsvp} confirmed={confirmed} onSave={saveRsvp}/>}
       </motion.section>}
     </AnimatePresence>
-    {page!=='welcome'&&<footer><span>ALLIE’S 25TH BIRTHDAY</span><span>❄</span><span>DECEMBER 12, 2026</span></footer>}
+    {page==='hub'?<div className="hub-title">ALLIE’S 25TH BIRTHDAY</div>:page!=='welcome'&&<footer><span>ALLIE’S 25TH BIRTHDAY</span><span>❄</span><span>DECEMBER 12, 2026</span></footer>}
   </main>;
 }
 const transition={initial:{opacity:0,y:14},animate:{opacity:1,y:0},exit:{opacity:0,y:-12},transition:{duration:.35}};
