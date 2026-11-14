@@ -423,3 +423,9 @@ body.drawing-cursor-active .art-cursor{opacity:0!important}
 .leaderboard-retry{display:flex;align-items:center;gap:6px;padding:8px 10px;border:1px solid #fff5;border-radius:20px;background:#fff1d51a;color:#fff9ed;font:9px 'DM Mono',monospace;cursor:pointer}
 .leaderboard .leader-note{margin-top:18px;padding-top:12px;border-top:1px solid #ffffff26;color:#f3eee599;font:8px/1.5 'DM Mono',monospace}
 @media(max-width:680px){.draw-layout{grid-template-columns:1fr;gap:14px}.leaderboard{min-height:0;padding:20px;border-radius:17px}.leaderboard-empty{min-height:115px}.activity-title:has(+ .draw-layout)>p:last-child{max-width:420px}}
+
+/* Match the visual scale of the dress-up characters on narrow screens. */
+@media(max-width:680px){
+ .character-art.character-bear{width:auto;height:74%;max-width:88%;aspect-ratio:318/455}
+ .character-art.character-olaf{width:auto;height:80%;max-width:88%;aspect-ratio:566/474}
+}
