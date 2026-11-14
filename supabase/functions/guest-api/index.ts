@@ -65,7 +65,7 @@ Deno.serve(async (req) => {
       const path = `${guest.id}/${crypto.randomUUID()}.${match[1]}`;
       const { error: uploadError } = await db.storage.from('drawings').upload(path, bytes, { contentType: `image/${match[1]}`, upsert: false });
       if (uploadError) throw uploadError;
-      const { data: submission, error: insertError } = await db.from('game_submissions').insert({ guest_id: guest.id, game_id: prompt.id, drawing_storage_path: path, score: body.score, scoring_version: 'client-ink-f1-r4-v1' }).select('id,score,created_at').single();
+      const { data: submission, error: insertError } = await db.from('game_submissions').insert({ guest_id: guest.id, game_id: prompt.id, drawing_storage_path: path, score: body.score, scoring_version: 'client-ink-f1-r3-v1' }).select('id,score,created_at').single();
       if (insertError) { await db.storage.from('drawings').remove([path]); throw insertError; }
       return json({ submission, message: 'Drawing saved with its similarity score.' }, 201);
     }

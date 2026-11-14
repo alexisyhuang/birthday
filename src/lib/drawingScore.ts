@@ -1,5 +1,6 @@
 const SAMPLE_WIDTH = 96;
-const MATCH_RADIUS = 4;
+// Keep a little tolerance for hand-drawn lines, but require closer alignment.
+const MATCH_RADIUS = 3;
 
 type InkMask = { width: number; height: number; pixels: Uint8Array; count: number };
 
