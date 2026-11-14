@@ -393,7 +393,7 @@ function Santa({name,rsvp,confirmed,answers,onRsvp,onSaveAnswers,onInvitation}:{
     finally{setSaving(false);}
   }
   const numberQuestions=[
-    {key:'weekday_job_hours',label:'How many hours do you spend actually doing your job?',step:'0.1'},
+    {key:'weekday_job_hours',label:'On a typical work day, how many hours do you spend actually doing your job?',step:'0.1'},
     {key:'unread_emails',label:'How many unread emails do you have?',step:'1'},
     {key:'unread_texts',label:'How many unread texts do you have?',step:'1'},
     {key:'allie_spiritual_age',label:'Allie’s turning 25 this year, but spiritually she is…',step:'1'},
