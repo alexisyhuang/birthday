@@ -394,10 +394,12 @@
 @media(max-width:680px){.draw-tools-left{gap:8px}.draw-tool-mode{width:100%}.draw-card .draw-tools{align-items:flex-start;gap:9px}.draw-tools .pen-sizes{margin-right:0}.leaderboard-modal{padding:19px}.result-actions{gap:7px}.result-actions .primary,.result-actions .secondary{flex:1}}
 .welcome-cat .welcome-cat-art.welcome-cat-art-reaction{position:relative;top:6px}
 @media(pointer:fine){
- body{cursor:url('/art/mouse.png') 16 44,auto!important}
- body *{cursor:inherit!important}
+ .scene,.scene *{cursor:none!important}
+ .art-cursor{position:fixed;z-index:10000;top:0;left:0;width:41.5px;height:46.5px;opacity:0;pointer-events:none;will-change:transform}
+ .art-cursor img{display:block;width:100%;height:100%;object-fit:contain}
 }
-body.drawing-cursor-active,body.drawing-cursor-active *{cursor:none!important}
+@media(pointer:coarse){.art-cursor{display:none}}
+body.drawing-cursor-active .art-cursor{opacity:0!important}
 .brush-cursor{position:absolute;z-index:5;top:0;left:0;box-sizing:border-box;border:1px solid #211e1d;border-radius:50%;background:#211e1d72;opacity:0;pointer-events:none;will-change:transform}
 .brush-cursor.brush-eraser{border:1.5px solid #8c628f;background:#fffaf3a8;box-shadow:0 0 0 1px #fff9}
 .draw-layout{width:min(930px,100%);grid-template-columns:minmax(0,1fr);gap:0;align-items:start;margin-inline:auto}

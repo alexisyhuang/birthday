@@ -52,6 +52,7 @@ export function App() {
   const [sound,setSound]=useState(false);
   const [soundUnavailable,setSoundUnavailable]=useState(false);
   const musicRef=useRef<HTMLAudioElement>(null);
+  const cursorRef=useRef<HTMLDivElement>(null);
   const [outfit,setOutfit]=useState<Outfit>(()=>normalizeOutfit(read(`outfit-${initialGuestName}`,{character:'cat',accessory:'scarf'})));
   const [rsvp,setRsvp]=useState<'yes'|'no'|null>(()=>read(`rsvp-${initialGuestName}`,null));
   const [confirmed,setConfirmed]=useState(false);
@@ -66,6 +67,28 @@ export function App() {
       setGuestName(data.guest.name);setRsvp(data.rsvp);setQuestionnaire(data.questionnaire);setIntroReady(true);
       if(data.outfit)setOutfit(normalizeOutfit({character:data.outfit.character_id,accessory:data.outfit.accessory??''}));
     }).catch(e=>{setBackendError(e instanceof Error?e.message:'Could not verify invitation.');setIntroReady(true);});
+  },[]);
+  useEffect(()=>{
+    const cursor=cursorRef.current;
+    if(!cursor||!window.matchMedia('(pointer:fine)').matches)return;
+    const move=(event:globalThis.PointerEvent)=>{
+      if(event.pointerType!=='mouse'&&event.pointerType!=='pen')return;
+      const viewport=window.visualViewport;
+      const rect=cursor.getBoundingClientRect();
+      const x=event.clientX+(viewport?.offsetLeft??0);
+      const y=event.clientY+(viewport?.offsetTop??0);
+      const hotspotX=rect.width*(16/83);
+      const hotspotY=rect.height*(44/93);
+      cursor.style.transform=`translate3d(${x-hotspotX}px,${y-hotspotY}px,0)`;
+      cursor.style.opacity='1';
+    };
+    const leave=(event:MouseEvent)=>{if(!event.relatedTarget)cursor.style.opacity='0';};
+    window.addEventListener('pointermove',move,{passive:true});
+    window.addEventListener('mouseout',leave);
+    return()=>{
+      window.removeEventListener('pointermove',move);
+      window.removeEventListener('mouseout',leave);
+    };
   },[]);
   const [hubVisit,setHubVisit]=useState(0);
   const goHub=()=>{setHubVisit(visit=>visit+1);setPage('hub');};
@@ -105,6 +128,7 @@ export function App() {
   const artStyle={'--hub-bg-desktop':`url(\"${assets.hubBackground.desktop}\")`,'--hub-bg-phone':`url(\"${assets.hubBackground.phone}\")`} as CSSProperties;
   return <main className={`scene scene-${page}${page==='hub'&&hubReveal?' revealing-hub':''}`} style={artStyle}>
     <div className="grain" aria-hidden="true"/>
+    {createPortal(<div ref={cursorRef} className="art-cursor" aria-hidden="true"><img src={assets.cursor} alt=""/></div>,document.body)}
     <audio ref={musicRef} src={assets.backgroundMusic} loop preload="none" onError={()=>{setSound(false);setSoundUnavailable(true)}} />
     {page!=='welcome'&&<header className={`topbar ${page==='letter'&&returnToSanta?'topbar-returning':''}`}><button className="sound" onClick={()=>void toggleSound()} aria-label={sound?'Turn sound off':'Turn sound on'} title={soundUnavailable?'Add public/audio/music/christmas-party.mp3 to enable music':undefined}>{sound?<Music2 size={16}/>:<VolumeX size={16}/>}<span>{sound?'Sound on':'Sound off'}</span></button>{page==='letter'&&returnToSanta&&<button className="return-to-santa" onClick={()=>{setReturnToSanta(false);setPage('santa');}}><ArrowLeft size={15}/> Back to Letters to Santa</button>}</header>}
     {backendError&&page!=='welcome'&&<div className="backend-notice" role="status">{backendError}</div>}
