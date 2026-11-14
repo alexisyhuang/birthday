@@ -51,6 +51,7 @@ export function App() {
   const [typedCount,setTypedCount]=useState(0);
   const [sound,setSound]=useState(false);
   const [soundUnavailable,setSoundUnavailable]=useState(false);
+  const [soundError,setSoundError]=useState('');
   const musicRef=useRef<HTMLAudioElement>(null);
   const cursorRef=useRef<HTMLDivElement>(null);
   const [outfit,setOutfit]=useState<Outfit>(()=>normalizeOutfit(read(`outfit-${initialGuestName}`,{character:'cat',accessory:'scarf'})));
@@ -97,8 +98,18 @@ export function App() {
     if(!audio)return;
     if(sound){audio.pause();setSound(false);return;}
     setSoundUnavailable(false);
-    try{await audio.play();setSound(true);}
-    catch{setSound(false);setSoundUnavailable(true);}
+    setSoundError('');
+    audio.volume=0.1;
+    try{
+      const playback=audio.play();
+      setSound(true);
+      await playback;
+    }catch(error){
+      setSound(false);
+      setSoundUnavailable(true);
+      setSoundError(error instanceof Error?error.message:'Playback was blocked by the browser.');
+      console.error('Background music could not start:',error);
+    }
   }
   const introLine=`Oh hi, ${guestName}! I have a special delivery for you...`;
   useEffect(()=>{if(!introStarted||!introReady||typedCount>=introLine.length)return;const timer=window.setTimeout(()=>setTypedCount(count=>count+1),42);return()=>window.clearTimeout(timer);},[introStarted,introReady,typedCount,introLine.length]);
@@ -129,8 +140,8 @@ export function App() {
   return <main className={`scene scene-${page}${page==='hub'&&hubReveal?' revealing-hub':''}`} style={artStyle}>
     <div className="grain" aria-hidden="true"/>
     {createPortal(<div ref={cursorRef} className="art-cursor" aria-hidden="true"><img src={assets.cursor} alt=""/></div>,document.body)}
-    <audio ref={musicRef} src={assets.backgroundMusic} loop preload="none" onError={()=>{setSound(false);setSoundUnavailable(true)}} />
-    {page!=='welcome'&&<header className={`topbar ${page==='letter'&&returnToSanta?'topbar-returning':''}`}><button className="sound" onClick={()=>void toggleSound()} aria-label={sound?'Turn sound off':'Turn sound on'} title={soundUnavailable?'Add public/audio/music/christmas-party.mp3 to enable music':undefined}>{sound?<Music2 size={16}/>:<VolumeX size={16}/>}<span>{sound?'Sound on':'Sound off'}</span></button>{page==='letter'&&returnToSanta&&<button className="return-to-santa" onClick={()=>{setReturnToSanta(false);setPage('santa');}}><ArrowLeft size={15}/> Back to Letters to Santa</button>}</header>}
+    <audio ref={musicRef} src={assets.backgroundMusic} loop preload="auto" onError={()=>{setSound(false);setSoundUnavailable(true);setSoundError('The music file could not be loaded.');}} />
+    {page!=='welcome'&&<header className={`topbar ${page==='letter'&&returnToSanta?'topbar-returning':''}`}><button type="button" className="sound" onClick={()=>void toggleSound()} aria-label={sound?'Turn sound off':'Turn sound on'} aria-pressed={sound}>{sound?<Music2 size={16}/>:<VolumeX size={16}/>}<span>{sound?'Sound on':'Sound off'}</span></button>{soundUnavailable&&<span className="sound-error" role="status" title={soundError}>{soundError?'Music couldn’t play':'Music unavailable'}</span>}{page==='letter'&&returnToSanta&&<button className="return-to-santa" onClick={()=>{setReturnToSanta(false);setPage('santa');}}><ArrowLeft size={15}/> Back to Letters to Santa</button>}</header>}
     {backendError&&page!=='welcome'&&<div className="backend-notice" role="status">{backendError}</div>}
     {page==='hub'&&<div className="hub-snow" aria-hidden="true">{snowflakes.map(i=><span key={i} style={{'--flake-x':`${(i*37)%100}%`,'--flake-delay':`${-(i*1.31)%15}s`,'--flake-duration':`${11+(i*7)%11}s`,'--flake-size':`${2+(i%3)}px`} as CSSProperties}/>)}</div>}
     <AnimatePresence mode="wait">
@@ -159,7 +170,7 @@ export function App() {
       </motion.section>}
     </AnimatePresence>
     {page==='hub'&&hubReveal&&<motion.div className="hub-blackout" aria-hidden="true" initial={{opacity:1}} animate={{opacity:0}} transition={{duration:1.8,ease:'easeOut'}} onAnimationComplete={()=>setHubReveal(false)}/>}
-    {page==='hub'?<motion.div className="hub-title" initial={hubReveal?{opacity:0,y:-8,scale:.95}:{opacity:1}} animate={{opacity:1,y:0,scale:1}} transition={{duration:.5,delay:hubReveal ? 0.5 : 0}}>ALLIE’S 25TH BIRTHDAY</motion.div>:page!=='welcome'&&<footer><span>ALLIE’S 25TH BIRTHDAY</span><span>❄</span><span>DECEMBER 12, 2026</span></footer>}
+    {page!=='hub'&&page!=='welcome'&&<footer><span>ALLIE’S 25TH BIRTHDAY</span><span>❄</span><span>DECEMBER 12, 2026</span></footer>}
   </main>;
 }
 const transition={initial:{opacity:0,y:14},animate:{opacity:1,y:0},exit:{opacity:0,y:-12},transition:{duration:.35}};

@@ -65,10 +65,9 @@
 }
 @media(prefers-reduced-motion:reduce){.hub-snow{display:none}}
 
-/* Hub header keeps only the sound control; title floats over the scenery. */
+/* Hub header keeps only the sound control. */
 .scene-hub .topbar{height:72px;justify-content:flex-end;border:0}
 .scene-hub .topbar .brand{display:none}
-.hub-title{position:absolute;z-index:4;top:11%;left:50%;transform:translateX(-50%);color:#fff8ed;text-shadow:0 2px 9px #34355388;text-align:center;font:500 11px 'DM Mono',monospace;letter-spacing:.2em;white-space:nowrap}
 .scene-hub footer{display:none}
 /* Positions follow the supplied full-screen composition. */
 .scene-hub .world-dress{left:3%;bottom:16vh;width:clamp(220px,26vw,350px)}
@@ -76,7 +75,6 @@
 .scene-hub .world-letters{right:15%;bottom:23vh;width:clamp(180px,18vw,250px)}
 .scene-hub .topbar{border-bottom:0}
 @media(max-width:680px){
- .hub-title{top:10%;font-size:10px;letter-spacing:.15em}
  .scene-hub .world-dress{left:3%;top:43%;bottom:auto;width:54vw}
  .scene-hub .world-draw{right:5%;left:auto;top:65%;bottom:auto;width:41vw}
  .scene-hub .world-letters{right:4%;top:27%;bottom:auto;width:37vw}
@@ -421,6 +419,7 @@ body.drawing-cursor-active .art-cursor{opacity:0!important}
 .leaderboard-empty>b{color:#fff9ed;font:500 19px 'Playfair Display',serif}
 .leaderboard-empty>p,.leaderboard-message{max-width:205px;margin:0;color:#f3eee5b8;font:10px/1.6 'DM Sans',sans-serif;text-align:center}
 .leaderboard-message{margin:36px auto}
+.sound-error{margin-left:10px;color:#9b665c;font:9px 'DM Mono',monospace}
 .leaderboard-retry{display:flex;align-items:center;gap:6px;padding:8px 10px;border:1px solid #fff5;border-radius:20px;background:#fff1d51a;color:#fff9ed;font:9px 'DM Mono',monospace;cursor:pointer}
 .leaderboard .leader-note{margin-top:18px;padding-top:12px;border-top:1px solid #ffffff26;color:#f3eee599;font:8px/1.5 'DM Mono',monospace}
 @media(max-width:680px){.draw-layout{grid-template-columns:1fr;gap:14px}.leaderboard{min-height:0;padding:20px;border-radius:17px}.leaderboard-empty{min-height:115px}.activity-title:has(+ .draw-layout)>p:last-child{max-width:420px}}

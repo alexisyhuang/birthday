@@ -4,7 +4,10 @@ import { fileURLToPath } from 'node:url';
 
 const projectRoot = fileURLToPath(new URL('../', import.meta.url));
 const config = readFileSync(resolve(projectRoot, 'src/data/assets.ts'), 'utf8');
-const paths = [...config.matchAll(/art\('([^']+)'\)/g)].map((match) => resolve(projectRoot, 'src/data', match[1]));
+const paths = [
+  ...[...config.matchAll(/art\('([^']+)'\)/g)].map((match) => resolve(projectRoot, 'src/data', match[1])),
+  resolve(projectRoot, 'art/bg music.mp3'),
+];
 
 for (const source of new Set(paths)) {
   if (!existsSync(source)) throw new Error(`Configured artwork is missing: ${relative(projectRoot, source)}`);

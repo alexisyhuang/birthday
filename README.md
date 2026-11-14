@@ -32,16 +32,36 @@ npx supabase functions deploy admin-invite --no-verify-jwt
 
 Supabase automatically provides the default secret key through `SUPABASE_SECRET_KEYS`; the functions read its `default` entry. Do not try to add a custom `SUPABASE_*` secret. Only `INVITE_ADMIN_SECRET` and `APP_ORIGIN` are custom secrets. `APP_ORIGIN` should be the final app origin; set `http://localhost:5173` for local development if needed. The publishable key is safe for browser use and belongs in `.env.local` only for local convenience.
 
-### Create individual invitation links
+### Create individual or bulk invitation links
 
-Call `admin-invite` from a trusted terminal, replacing the placeholder secret and guest name. Its response contains a one-time raw token. Save the returned link and send it privately to that guest; the database stores only the SHA-256 hash.
+The `admin-invite` Edge Function accepts either one `name` or a `names` array of up to 100 guests. Each guest gets a separate random invitation token, and only its SHA-256 hash is stored in the database. The raw links are returned once, so save the response securely and send each guest only their own link.
+
+Deploy the bulk-capable function after updating it:
 
 ```sh
-curl -X POST 'https://znbyiipxxtrgmmahmhpr.supabase.co/functions/v1/admin-invite' \\
-  -H 'Authorization: Bearer YOUR_INVITE_ADMIN_SECRET' \\
-  -H 'Content-Type: application/json' \\
+npx supabase functions deploy admin-invite --no-verify-jwt
+```
+
+For one guest, call it from a trusted terminal:
+
+```sh
+curl -X POST 'https://znbyiipxxtrgmmahmhpr.supabase.co/functions/v1/admin-invite' \
+  -H 'Authorization: Bearer YOUR_INVITE_ADMIN_SECRET' \
+  -H 'Content-Type: application/json' \
   -d '{"name":"Guest Name"}'
 ```
+
+For a batch, make a local `guest-names.txt` file with one name per line. The helper script returns a tab-separated name/link list; the names file and output file are ignored by Git:
+
+```sh
+read -s "INVITE_ADMIN_SECRET?Paste your invite admin secret: "
+printf '\n'
+export INVITE_ADMIN_SECRET
+node scripts/create-invites.mjs guest-names.txt > invite-links.tsv
+unset INVITE_ADMIN_SECRET
+```
+
+Open `invite-links.tsv` and text each person the URL on their row. The endpoint creates links in batches of up to 100; run it again for larger guest lists. Keep the TSV private because it contains the guests’ access links. This creates the links in bulk; it does not send the text messages.
 
 ### Current backend boundary
 
@@ -110,6 +130,6 @@ To show only attendees who replied yes, add `where rsvp_status = 'yes'` before `
 2. In Vercel project settings, add `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` for Production. These are the only Supabase values the browser needs. Do not add the Supabase secret or `INVITE_ADMIN_SECRET` to Vercel.
 3. Before launch, run `npx supabase db push` and deploy both Edge Functions: `npx supabase functions deploy guest-api --no-verify-jwt` and `npx supabase functions deploy admin-invite --no-verify-jwt`. Set Supabase's `APP_ORIGIN` secret to the exact production URL (including `https://` and any custom domain) so CORS and generated invitation URLs use the live site.
 4. Create a test invite from the production site, open it on desktop and mobile, and check RSVP updates, outfit saves, drawing submissions, questionnaire saves, and the RSVP/query above.
-5. Music is optional; the current `public/audio/music` folder has no track yet. Add `christmas-party.mp3` there if you want the sound toggle to play music.
+5. Background music is in `art/bg music.mp3`. The sound toggle starts playback after a guest clicks it, at 10% volume; browsers block playback before an explicit interaction.
 
 The drawing score is still calculated in the browser and submitted with the drawing. That is fine for a casual party leaderboard, but guests could manipulate scores; use server-side scoring before relying on it for a competitive or prize-based ranking.

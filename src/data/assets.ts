@@ -2,8 +2,8 @@
 const art = (path: string) => new URL(path, import.meta.url).href;
 
 export const assets = {
-  // Add the host-provided loop here to enable the sound toggle.
-  backgroundMusic: '/audio/music/christmas-party.mp3',
+  // The artwork copy script places this exact file at /art for dev and production.
+  backgroundMusic: '/art/bg%20music.mp3',
   cursor: art('../../art/mouse.png'),
   welcomeCat: art('../../art/welcome cat.png'),
   welcomeCatAfterClick: art('../../art/welcome cat 2.png'),
