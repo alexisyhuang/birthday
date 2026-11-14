@@ -1,4 +1,4 @@
-# Christmas Birthday Invitation
+# Allie’s 25th Birthday
 
 React + TypeScript + Vite prototype. Start with `npm install` then `npm run dev`.
 
