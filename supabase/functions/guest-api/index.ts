@@ -17,11 +17,12 @@ Deno.serve(async (req) => {
     if (error || !guest) return json({ error: 'Invalid invitation link.' }, 401);
     const action = body.action;
     if (action === 'verify') {
-      const [{ data: outfit }, { data: latest }] = await Promise.all([
+      const [{ data: outfit }, { data: latest }, { data: questionnaire }] = await Promise.all([
         db.from('outfits').select('character_id,accessory').eq('guest_id', guest.id).maybeSingle(),
         db.from('game_submissions').select('score').eq('guest_id', guest.id).order('created_at', { ascending: false }).limit(1).maybeSingle(),
+        db.from('guest_questionnaires').select('answers').eq('guest_id', guest.id).maybeSingle(),
       ]);
-      return json({ guest: { id: guest.id, name: guest.name }, rsvp: guest.rsvp_status, outfit: outfit ?? null, latestScore: latest?.score ?? null });
+      return json({ guest: { id: guest.id, name: guest.name }, rsvp: guest.rsvp_status, outfit: outfit ?? null, questionnaire: questionnaire?.answers ?? {}, latestScore: latest?.score ?? null });
     }
     if (action === 'rsvp') {
       if (body.status !== 'yes' && body.status !== 'no') return json({ error: 'RSVP must be yes or no.' }, 400);
@@ -29,16 +30,31 @@ Deno.serve(async (req) => {
       if (updateError) throw updateError;
       return json({ rsvp: body.status });
     }
+    if (action === 'questionnaire') {
+      const answers = body.answers;
+      const textFields = ['annoying_song', 'holiday_movie', 'favorite_dessert', 'regift_item', 'christmas_association', 'overrated_restaurant', 'party_excuse', 'allie_association'];
+      const numberLimits: Record<string, number> = { weekday_job_hours: 1000, unread_emails: 1_000_000, unread_texts: 1_000_000, allie_spiritual_age: 1000 };
+      const allowedFields = [...textFields, ...Object.keys(numberLimits), 'name_preference'];
+      if (!answers || typeof answers !== 'object' || Array.isArray(answers) || Object.keys(answers).some(key => !allowedFields.includes(key))) return json({ error: 'Invalid questionnaire answers.' }, 400);
+      for (const key of textFields) if (key in answers && (typeof answers[key] !== 'string' || answers[key].length > 1000)) return json({ error: 'A written answer is too long.' }, 400);
+      for (const [key, max] of Object.entries(numberLimits)) if (key in answers && (typeof answers[key] !== 'number' || !Number.isFinite(answers[key]) || answers[key] < 0 || answers[key] > max)) return json({ error: 'A number answer is outside the allowed range.' }, 400);
+      if ('name_preference' in answers && !['allie', 'alexis', 'depends'].includes(answers.name_preference)) return json({ error: 'Choose Allie, Alexis, or depends.' }, 400);
+      const { error: saveError } = await db.from('guest_questionnaires').upsert({ guest_id: guest.id, answers }, { onConflict: 'guest_id' });
+      if (saveError) throw saveError;
+      return json({ saved: true, questionnaire: answers });
+    }
     if (action === 'outfit') {
       const ids = ['bear', 'cat', 'dog', 'snowman'];
-      const accessories = ['gingerbread', 'bow', 'santa_hat', 'scarf'];
-      if (!ids.includes(body.character_id) || (body.accessory !== null && !accessories.includes(body.accessory))) return json({ error: 'Invalid outfit selection.' }, 400);
-      const { error: saveError } = await db.from('outfits').upsert({ guest_id: guest.id, character_id: body.character_id, accessory: body.accessory }, { onConflict: 'guest_id' });
+      const accessories: Record<string, string> = { gingerbread: 'gingerbread', bow: 'bow', santa_hat: 'santa_hat', scarf: 'scarf', sparkle: 'gingerbread', hat: 'santa_hat' };
+      const accessory = body.accessory == null ? null : accessories[body.accessory];
+      if (!ids.includes(body.character_id)) return json({ error: `Invalid character selection: ${String(body.character_id)}.` }, 400);
+      if (body.accessory != null && !accessory) return json({ error: `Invalid accessory selection: ${String(body.accessory)}.` }, 400);
+      const { error: saveError } = await db.from('outfits').upsert({ guest_id: guest.id, character_id: body.character_id, accessory }, { onConflict: 'guest_id' });
       if (saveError) throw saveError;
       return json({ saved: true });
     }
     if (action === 'submit-drawing') {
-      if (typeof body.game_id !== 'string' || typeof body.image_base64 !== 'string' || body.image_base64.length > 7_000_000) return json({ error: 'Invalid drawing submission.' }, 400);
+      if (typeof body.game_id !== 'string' || typeof body.image_base64 !== 'string' || body.image_base64.length > 7_000_000 || typeof body.score !== 'number' || !Number.isInteger(body.score) || body.score < 0 || body.score > 100) return json({ error: 'Invalid drawing submission.' }, 400);
       const { data: prompt } = await db.from('game_prompts').select('id').eq('id', body.game_id).eq('active', true).maybeSingle();
       if (!prompt) return json({ error: 'Unknown drawing prompt.' }, 400);
       const match = body.image_base64.match(/^data:image\/(png|jpeg|webp);base64,([\s\S]+)$/);
@@ -49,9 +65,9 @@ Deno.serve(async (req) => {
       const path = `${guest.id}/${crypto.randomUUID()}.${match[1]}`;
       const { error: uploadError } = await db.storage.from('drawings').upload(path, bytes, { contentType: `image/${match[1]}`, upsert: false });
       if (uploadError) throw uploadError;
-      const { data: submission, error: insertError } = await db.from('game_submissions').insert({ guest_id: guest.id, game_id: prompt.id, drawing_storage_path: path }).select('id,score,created_at').single();
+      const { data: submission, error: insertError } = await db.from('game_submissions').insert({ guest_id: guest.id, game_id: prompt.id, drawing_storage_path: path, score: body.score, scoring_version: 'client-ink-f1-r4-v1' }).select('id,score,created_at').single();
       if (insertError) { await db.storage.from('drawings').remove([path]); throw insertError; }
-      return json({ submission, message: 'Drawing saved. Score pending server-side scoring.' }, 201);
+      return json({ submission, message: 'Drawing saved with its similarity score.' }, 201);
     }
     if (action === 'leaderboard') {
       const { data, error: leaderboardError } = await db.from('game_submissions').select('score,created_at,guests(name)').not('score', 'is', null).order('score', { ascending: false }).order('created_at', { ascending: true }).limit(10);

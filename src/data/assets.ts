@@ -2,7 +2,11 @@
 const art = (path: string) => new URL(path, import.meta.url).href;
 
 export const assets = {
+  // Add the host-provided loop here to enable the sound toggle.
+  backgroundMusic: '/audio/music/christmas-party.mp3',
+  cursor: art('../../art/mouse.png'),
   welcomeCat: art('../../art/welcome cat.png'),
+  welcomeCatAfterClick: art('../../art/welcome cat 2.png'),
   exclamationBubble: art('../../art/exclamation bubble.png'),
   envelope: art('../../art/letter envelope.png'),
   letterBackground: art('../../art/letter bg.png'),
@@ -26,5 +30,11 @@ export const assets = {
     bow: art('../../art/accessory-parts/bow.png'),
     santaHat: art('../../art/accessory-parts/santa-hat.png'),
     scarf: art('../../art/accessory-parts/scarf.png'),
+  },
+  drawingPrompts: {
+    pusheenWreath: art('../../art/drawing game/pusheen wreath.png'),
+    bearTree: art('../../art/drawing game/bear w tree.png.webp'),
+    helloKittyGingerbread: art('../../art/drawing game/hello kitty gingerbread.png'),
+    pusheenWinter: art('../../art/drawing game/pusheen winter.jpg'),
   },
 };

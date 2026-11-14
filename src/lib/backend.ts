@@ -1,11 +1,12 @@
 import { createClient } from '@supabase/supabase-js';
 import { z } from 'zod';
+import { questionnaireSchema } from './questionnaire';
 
 const url = import.meta.env.VITE_SUPABASE_URL as string | undefined;
 const key = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string | undefined;
 export const supabase = url && key ? createClient(url, key) : null;
 export const invitationToken = new URLSearchParams(window.location.search).get('token');
-const guestSchema = z.object({ guest: z.object({ id: z.string().uuid(), name: z.string() }), rsvp: z.enum(['yes','no']).nullable(), outfit: z.object({ character_id: z.string(), accessory: z.string().nullable() }).nullable() });
+const guestSchema = z.object({ guest: z.object({ id: z.string().uuid(), name: z.string() }), rsvp: z.enum(['yes','no']).nullable(), outfit: z.object({ character_id: z.string(), accessory: z.string().nullable() }).nullable(), questionnaire: questionnaireSchema.default({}) });
 export type GuestState = z.infer<typeof guestSchema>;
 
 export async function guestRequest<T>(action: string, payload: Record<string, unknown> = {}): Promise<T> {
