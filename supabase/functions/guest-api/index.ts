@@ -70,7 +70,7 @@ Deno.serve(async (req) => {
       return json({ submission, message: 'Drawing saved with its similarity score.' }, 201);
     }
     if (action === 'leaderboard') {
-      const { data, error: leaderboardError } = await db.from('game_submissions').select('score,created_at,guests(name)').not('score', 'is', null).order('score', { ascending: false }).order('created_at', { ascending: true }).limit(10);
+      const { data, error: leaderboardError } = await db.from('game_submissions').select('score,created_at,guests(name)').not('score', 'is', null).order('score', { ascending: false }).order('created_at', { ascending: true }).limit(15);
       if (leaderboardError) throw leaderboardError;
       return json({ leaderboard: data ?? [] });
     }
